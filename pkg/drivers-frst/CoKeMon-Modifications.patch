@@ -1,0 +1,18 @@
+Only in ./: CoKeMon-Modifications.patch
+Only in ./: .git
+diff -r ./uart/include/uart_base.h /mnt/home/clement/phd/Huawei_microkernel/l4re/l4/pkg/drivers-frst/uart/include/uart_base.h
+153c153,154
+<               Poll_timeout_counter i(3000000);
+---
+>               // Poll_timeout_counter i(3000000);
+>               Poll_timeout_counter i(3000);
+diff -r ./uart/src/uart_16550.cc /mnt/home/clement/phd/Huawei_microkernel/l4re/l4/pkg/drivers-frst/uart/src/uart_16550.cc
+124,126c124,127
+<     Poll_timeout_counter i(5000000);
+<     while (i.test(!(_regs->read<unsigned char>(LSR) & LSR_TSRE)))
+<       ;
+---
+>     return;
+>     // Poll_timeout_counter i(5000000);
+>     // while (i.test(!(_regs->read<unsigned char>(LSR) & LSR_TSRE)))
+>     //   ;
