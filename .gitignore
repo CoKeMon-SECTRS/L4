@@ -1,8 +1,8 @@
-/pkg/*
-!/pkg/Makefile
 /.repo
 /tool/gen_dopecode
 /.ham
 /conf/Makeconf.boot
 /tests/*
 !/tests/Makefile
+compile_commands.json
+.cache/

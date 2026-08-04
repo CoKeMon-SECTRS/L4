@@ -71,6 +71,55 @@ module ned
 module hello.cfg
 module hello
 
+entry osswitch
+kernel fiasco -serial_esc
+roottask moe --init=rom/osswitch
+module l4re
+module osswitch
+
+entry osswitch-cfg
+kernel fiasco -serial_esc
+roottask moe rom/osswitch.cfg
+module ned
+module l4re
+module hello
+module osswitch
+module osswitch.cfg
+
+entry nvme
+kernel fiasco -serial_esc
+roottask moe rom/nvme.cfg
+module l4re
+module ned
+module io
+module nvme-drv
+module nvme.cfg
+module hw_devices.io
+module vbus-rk.io
+
+entry emmc
+kernel fiasco -serial_esc
+roottask moe rom/emmc.cfg
+module l4re
+module ned
+module io
+module emmc-drv
+module emmc.cfg
+module hw_devices.io
+module vbus-rk.io
+
+entry emmc-qemu
+roottask moe rom/emmc.cfg
+kernel fiasco -serial_esc
+module l4re
+module ned
+module io
+module emmc-drv
+module emmc.cfg
+module[arch=arm64] io/plat-arm_virt/hw_devices.io
+module[arch=arm] io/plat-arm_virt/hw_devices.io
+module vbus.io
+
 entry hello-2
 kernel fiasco -serial_esc
 roottask moe rom/hello-2.cfg
