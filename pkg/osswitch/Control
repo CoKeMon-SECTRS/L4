@@ -1,0 +1,2 @@
+requires: stdlibs l4sys libsigma0 l4virtio libstdc++
+Maintainer: clement.thorens@inf.ethz.ch

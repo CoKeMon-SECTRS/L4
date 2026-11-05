@@ -1,0 +1,65 @@
+From d4528ce41c929e41fa328adde637c21157933adb Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Cl=C3=A9ment=20Thorens?= <clement.thorens@inf.ethz.ch>
+Date: Thu, 5 Nov 2026 09:51:12 +0100
+Subject: [PATCH] io modifications patch
+
+Change-Id: Iad01a1b64fce08ac81d21479bea5d5747c8cb7a0
+---
+ .../io/server/src/acpi/platform_arm64_iort.cc   | 17 ++++++++++++-----
+ pkg/io/io/server/src/pci-root.h                 | 10 ++++++++--
+ 2 files changed, 20 insertions(+), 7 deletions(-)
+
+diff --git a/pkg/io/io/server/src/acpi/platform_arm64_iort.cc b/pkg/io/io/server/src/acpi/platform_arm64_iort.cc
+index 48c83502..f492a7a4 100644
+--- a/pkg/io/io/server/src/acpi/platform_arm64_iort.cc
++++ b/pkg/io/io/server/src/acpi/platform_arm64_iort.cc
+@@ -351,13 +351,20 @@ public:
+     if (!rid)
+       return -L4_EINVAL;
+ 
++    l4_uint64_t src = (unsigned{rid.bus()} << 8) | rid.devfn();
++
+     Root_complex const *rc = find_root_complex(rid.segment());
+     if (!rc)
+-      return -L4_ENODEV;
+-
+-    // Start from a standard PCI requester ID according to Arm Base System
+-    // Architecture.
+-    l4_uint64_t src = (unsigned{rid.bus()} << 8) | rid.devfn();
++      {
++        // No IORT root complex found (e.g. no IORT table available).
++        // Fall back to identity mapping: stream_id = PCI RID, SMMU index 0.
++        d_printf(DBG_WARN, "IORT: no root complex for segment %u, "
++                 "using identity mapping for %02x:%02x.%u (sid=0x%llx)\n",
++                 rid.segment().get(), rid.bus().get(), rid.dev().get(),
++                 rid.fn().get(), src);
++        *si = src;
++        return 0;
++      }
+ 
+     src = rc->translate_stream_id(src);
+     if (src == Iort_node::Translation_failed)
+diff --git a/pkg/io/io/server/src/pci-root.h b/pkg/io/io/server/src/pci-root.h
+index 59ec1c72..469f4afc 100644
+--- a/pkg/io/io/server/src/pci-root.h
++++ b/pkg/io/io/server/src/pci-root.h
+@@ -35,8 +35,14 @@ protected:
+     // Forward to platform provided DMA translator
+     if (_platform_adapter)
+       return _platform_adapter->translate_dma_src(rid, si);
+-    else
+-      return -L4_ENODEV;
++
++    if (!rid)
++      return -L4_EINVAL;
++
++    // No platform adapter (e.g. ACPI off). Use identity mapping:
++    // stream_id = PCI RID, SMMU index 0.
++    *si = (unsigned{rid.bus()} << 8) | rid.devfn();
++    return 0;
+   }
+ 
+   int map_msi_src(If *dev, l4_uint64_t msi_addr_phys,
+-- 
+2.56.0
+

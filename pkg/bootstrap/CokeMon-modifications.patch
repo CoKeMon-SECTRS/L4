@@ -2,7 +2,7 @@ Only in ./: CokeMon-modifications.patch
 Only in ./: .git
 diff -r ./server/src/dt.cc /mnt/home/clement/phd/Huawei_microkernel/l4re/l4/pkg/bootstrap/server/src/dt.cc
 236a237
->               if(strcmp(name,"microkernel")){
+>               if(strncmp(name, "microkernel", 11) != 0){
 238a240
 >               }
 diff -r ./server/src/Makefile.platform /mnt/home/clement/phd/Huawei_microkernel/l4re/l4/pkg/bootstrap/server/src/Makefile.platform

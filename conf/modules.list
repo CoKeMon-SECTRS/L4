@@ -73,18 +73,16 @@ module hello
 
 entry osswitch
 kernel fiasco -serial_esc
-roottask moe --init=rom/osswitch
-module l4re
-module osswitch
-
-entry osswitch-cfg
-kernel fiasco -serial_esc
-roottask moe rom/osswitch.cfg
+roottask moe rom/osswitch-blk.cfg
 module ned
 module l4re
-module hello
+module io
+module emmc-drv
 module osswitch
-module osswitch.cfg
+module osswitch-blk.cfg
+module[arch=arm64] io/plat-arm_virt/hw_devices.io
+module[arch=arm] io/plat-arm_virt/hw_devices.io
+module vbus-sdhci.io
 
 entry nvme
 kernel fiasco -serial_esc
