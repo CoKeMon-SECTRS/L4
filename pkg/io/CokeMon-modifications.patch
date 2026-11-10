@@ -1,18 +1,18 @@
-From d4528ce41c929e41fa328adde637c21157933adb Mon Sep 17 00:00:00 2001
+From 5e54a7642bf7d77cb30ef9447d88fa9d9b2a0daf Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Cl=C3=A9ment=20Thorens?= <clement.thorens@inf.ethz.ch>
 Date: Thu, 5 Nov 2026 09:51:12 +0100
 Subject: [PATCH] io modifications patch
 
 Change-Id: Iad01a1b64fce08ac81d21479bea5d5747c8cb7a0
 ---
- .../io/server/src/acpi/platform_arm64_iort.cc   | 17 ++++++++++++-----
- pkg/io/io/server/src/pci-root.h                 | 10 ++++++++--
+ io/server/src/acpi/platform_arm64_iort.cc | 17 ++++++++++++-----
+ io/server/src/pci-root.h                  | 10 ++++++++--
  2 files changed, 20 insertions(+), 7 deletions(-)
 
-diff --git a/pkg/io/io/server/src/acpi/platform_arm64_iort.cc b/pkg/io/io/server/src/acpi/platform_arm64_iort.cc
-index 48c83502..f492a7a4 100644
---- a/pkg/io/io/server/src/acpi/platform_arm64_iort.cc
-+++ b/pkg/io/io/server/src/acpi/platform_arm64_iort.cc
+diff --git a/io/server/src/acpi/platform_arm64_iort.cc b/io/server/src/acpi/platform_arm64_iort.cc
+index 48c8350..f492a7a 100644
+--- a/io/server/src/acpi/platform_arm64_iort.cc
++++ b/io/server/src/acpi/platform_arm64_iort.cc
 @@ -351,13 +351,20 @@ public:
      if (!rid)
        return -L4_EINVAL;
@@ -39,10 +39,10 @@ index 48c83502..f492a7a4 100644
  
      src = rc->translate_stream_id(src);
      if (src == Iort_node::Translation_failed)
-diff --git a/pkg/io/io/server/src/pci-root.h b/pkg/io/io/server/src/pci-root.h
-index 59ec1c72..469f4afc 100644
---- a/pkg/io/io/server/src/pci-root.h
-+++ b/pkg/io/io/server/src/pci-root.h
+diff --git a/io/server/src/pci-root.h b/io/server/src/pci-root.h
+index 59ec1c7..469f4af 100644
+--- a/io/server/src/pci-root.h
++++ b/io/server/src/pci-root.h
 @@ -35,8 +35,14 @@ protected:
      // Forward to platform provided DMA translator
      if (_platform_adapter)
@@ -61,5 +61,5 @@ index 59ec1c72..469f4afc 100644
  
    int map_msi_src(If *dev, l4_uint64_t msi_addr_phys,
 -- 
-2.56.0
+2.47.3
 

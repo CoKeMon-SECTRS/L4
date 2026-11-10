@@ -1,11 +1,40 @@
-Only in ./: CokeMon-modifications.patch
-Only in ./: .git
-diff -r ./server/src/dt.cc /mnt/home/clement/phd/Huawei_microkernel/l4re/l4/pkg/bootstrap/server/src/dt.cc
-236a237
->               if(strncmp(name, "microkernel", 11) != 0){
-238a240
->               }
-diff -r ./server/src/Makefile.platform /mnt/home/clement/phd/Huawei_microkernel/l4re/l4/pkg/bootstrap/server/src/Makefile.platform
-93a94
-> SUPPORT_CC_arm64-rk3588        := platform/rk3588.cc dt.cc
-Only in /mnt/home/clement/phd/Huawei_microkernel/l4re/l4/pkg/bootstrap/server/src/platform: rk3588.cc
+From 3888bf5cbaf44f2ae74000e37e62a40206d1f301 Mon Sep 17 00:00:00 2001
+From: Clement Thorens <clement.thorens@inf.ethz.ch>
+Date: Tue, 10 Nov 2026 10:37:40 +0100
+Subject: [PATCH] CoKeMon modifications for QEMU
+
+---
+ server/src/Makefile.platform | 1 +
+ server/src/dt.cc             | 2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/server/src/Makefile.platform b/server/src/Makefile.platform
+index 0cddb5d..721021a 100644
+--- a/server/src/Makefile.platform
++++ b/server/src/Makefile.platform
+@@ -91,6 +91,7 @@ DEFAULT_RELOC_arm64-rcar3      := 0x09000000
+ SUPPORT_CC_arm64-rcar4         := platform/rcar4.cc dt.cc
+ SUPPORT_CC_arm64-rpi           := platform/rpi.cc dt.cc
+ SUPPORT_CC_arm64-ls1012afrdm   := platform/layerscape.cc platform_single_ram_region.cc
++SUPPORT_CC_arm64-rk3588        := platform/rk3588.cc dt.cc
+ SUPPORT_CC_arm64-ls1046        := platform/ls1046.cc
+ SUPPORT_CC_arm64-zynqmp        := platform/zynq.cc platform_single_ram_region.cc
+ SUPPORT_CC_arm64-arm_virt      := platform/arm_virt.cc dt.cc \
+diff --git a/server/src/dt.cc b/server/src/dt.cc
+index 2e928fa..037499b 100644
+--- a/server/src/dt.cc
++++ b/server/src/dt.cc
+@@ -234,8 +234,10 @@ void Dt::setup_memory() const
+             {
+               info("  %20s: %10llx - %10llx\n", name, start, start + sz - 1);
+ 
++              if(strncmp(name, "microkernel", 11) != 0){
+               mem_manager->regions->add(
+                 Region::start_size(start, sz, name, Region::Arch));
++              }
+             });
+         });
+     }
+-- 
+2.47.3
+

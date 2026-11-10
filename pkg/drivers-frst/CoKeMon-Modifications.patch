@@ -1,18 +1,45 @@
-Only in ./: CoKeMon-Modifications.patch
-Only in ./: .git
-diff -r ./uart/include/uart_base.h /mnt/home/clement/phd/Huawei_microkernel/l4re/l4/pkg/drivers-frst/uart/include/uart_base.h
-153c153,154
-<               Poll_timeout_counter i(3000000);
+From 3f413ec56c435d409a3b9ebb45ff9739f6a9366b Mon Sep 17 00:00:00 2001
+From: Clement Thorens <clement.thorens@inf.ethz.ch>
+Date: Tue, 10 Nov 2026 10:37:40 +0100
+Subject: [PATCH] CoKeMon modifications for QEMU
+
 ---
->               // Poll_timeout_counter i(3000000);
->               Poll_timeout_counter i(3000);
-diff -r ./uart/src/uart_16550.cc /mnt/home/clement/phd/Huawei_microkernel/l4re/l4/pkg/drivers-frst/uart/src/uart_16550.cc
-124,126c124,127
-<     Poll_timeout_counter i(5000000);
-<     while (i.test(!(_regs->read<unsigned char>(LSR) & LSR_TSRE)))
-<       ;
----
->     return;
->     // Poll_timeout_counter i(5000000);
->     // while (i.test(!(_regs->read<unsigned char>(LSR) & LSR_TSRE)))
->     //   ;
+ uart/include/uart_base.h | 3 ++-
+ uart/src/uart_16550.cc   | 7 ++++---
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/uart/include/uart_base.h b/uart/include/uart_base.h
+index 099d7a2..76b3ce6 100644
+--- a/uart/include/uart_base.h
++++ b/uart/include/uart_base.h
+@@ -150,7 +150,8 @@ namespace L4
+ 
+           if constexpr (Timeout_guard)
+             {
+-              Poll_timeout_counter i(3000000);
++              // Poll_timeout_counter i(3000000);
++              Poll_timeout_counter i(3000);
+               while (i.test(!self->tx_avail()))
+                 ;
+             }
+diff --git a/uart/src/uart_16550.cc b/uart/src/uart_16550.cc
+index 8c63995..e5d6c6c 100644
+--- a/uart/src/uart_16550.cc
++++ b/uart/src/uart_16550.cc
+@@ -121,9 +121,10 @@ namespace L4
+ 
+   void Uart_16550::wait_tx_done() const
+   {
+-    Poll_timeout_counter i(5000000);
+-    while (i.test(!(_regs->read<unsigned char>(LSR) & LSR_TSRE)))
+-      ;
++    return;
++    // Poll_timeout_counter i(5000000);
++    // while (i.test(!(_regs->read<unsigned char>(LSR) & LSR_TSRE)))
++    //   ;
+   }
+ 
+   void Uart_16550::out_char(char c) const
+-- 
+2.47.3
+
